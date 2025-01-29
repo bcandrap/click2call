@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelGenius - AI-Powered Travel Adventures</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('travel-bg.jpg');
+            background-size: cover;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        /* Main Content */
+        .hero {
+            padding: 4rem 0;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.9);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Chat Bot Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .chat-header {
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-log {
+            height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .chat-message {
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #f1f1f1;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <h1>TravelGenius</h1>
+            <div class="nav-links">
+                <a href="#destinations">Destinations</a>
+                <a href="#offers">Special Offers</a>
+                <a href="#about">About</a>
+            </div>
+        </nav>
+
+        <div class="hero">
+            <h2>Your AI-Powered Travel Companion</h2>
+            <p>Discover personalized travel experiences powered by artificial intelligence</p>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" placeholder="Where to?">
+                <input type="date" placeholder="Check-in">
+                <input type="date" placeholder="Check-out">
+                <select>
+                    <option>Travelers</option>
+                    <option>1 Traveler</option>
+                    <option>2 Travelers</option>
+                </select>
+                <button>Search</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AI Chat Bot -->
+    <div class="chat-toggle" onclick="toggleChat()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <h3>TravelGenius AI</h3>
+            <button onclick="toggleChat()">×</button>
+        </div>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Ask me anything...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Chat Bot Logic
+        let chatVisible = false;
+
+        function toggleChat() {
+            chatVisible = !chatVisible;
+            document.getElementById('chatContainer').style.display = 
+                chatVisible ? 'block' : 'none';
+        }
+
+        function appendMessage(message, isUser) {
+            const chatLog = document.getElementById('chatLog');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatLog.appendChild(messageDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        async function getAIResponse(userMessage) {
+            // Mock AI response - Replace with actual API call
+            const responses = {
+                'hello': 'Hello! How can I assist with your travel plans today?',
+                'booking': 'I can help you with bookings! Please provide your travel dates and destination.',
+                'paris': 'Paris is a wonderful choice! Here are top attractions: Eiffel Tower, Louvre Museum...',
+                'default': 'I can help with:\n- Booking information\n- Destination recommendations\n- Travel tips\nHow can I assist you?'
+            };
+
+            const lowerMsg = userMessage.toLowerCase();
+            return responses[lowerMsg] || responses['default'];
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+            
+            if (!message) return;
+
+            appendMessage(message, true);
+            userInput.value = '';
+
+            // Simulate AI response delay
+            setTimeout(async () => {
+                const response = await getAIResponse(message);
+                appendMessage(response, false);
+            }, 1000);
+        }
+
+        // Handle Enter key
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
