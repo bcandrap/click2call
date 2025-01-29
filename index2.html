@@ -227,10 +227,6 @@ async function getAIResponse(userMessage) {
     return data.choices[0].message.content;
 }
 
-            const lowerMsg = userMessage.toLowerCase();
-            return responses[lowerMsg] || responses['default'];
-        }
-
         async function sendMessage() {
             const userInput = document.getElementById('userInput');
             const message = userInput.value.trim();
